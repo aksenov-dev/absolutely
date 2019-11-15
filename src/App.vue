@@ -1,6 +1,22 @@
 <template>
   <v-app>
+
+		<!-- navbar -->
     <Navbar :links="links" />
+
+		<v-content class="secondary px-4 pb-4">
+			<!-- renders the matched component for the given path -->
+      <router-view></router-view>
+    </v-content>
+
+		<!-- footer -->
+    <v-footer padless class="secondary">
+      <v-col class="caption accent--text px-md-8 px-4" cols="12">
+        © {{ new Date().getFullYear() }}, Тест на знание иностранных слов 
+				<strong>«Absolutely»</strong>
+      </v-col>
+    </v-footer>
+
   </v-app>
 </template>
 
