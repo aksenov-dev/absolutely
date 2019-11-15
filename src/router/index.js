@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Meta from 'vue-meta'
 
 import Home from '../views/Home.vue'
+import Test from '../views/Test.vue'
 
 Vue.use(VueRouter)
 Vue.use(Meta)
@@ -12,7 +13,13 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
-  }
+	},
+	{
+    path: '/:name',
+		name: 'test',
+		props: true,
+		component: Test
+	}
 ]
 
 const router = new VueRouter({
