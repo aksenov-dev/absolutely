@@ -12,6 +12,8 @@
 							<router-link :to="link.route" class="td-none">
 								<v-row align="center" style="height:200px" class="mx-0" :class="link.color">
 									<v-col>
+
+										<!-- background for icon -->
 										<v-sheet 
 											color="white" 
 											height="128"

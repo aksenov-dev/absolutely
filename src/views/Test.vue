@@ -3,12 +3,15 @@
 		
 		<!-- preview card -->
 		<v-card 
+			v-if="!showTest" 
 			:elevation="$vuetify.breakpoint.xsOnly ? 8 : 24" 
 			:width="$vuetify.breakpoint.xsOnly ? 320 : 600" 
 			class="mx-auto"
 		>			
 			<v-row align="center" class="mx-0" :class="linkParams.color">
 				<v-col class="my-4 my-sm-10">
+
+					<!-- background for icon -->
 					<v-sheet 
 						:width="roundSize"
 						:height="roundSize"
@@ -85,11 +88,42 @@
 			</v-card-actions>
 		</v-card>
 
+		<!-- carousel card -->
+		<v-card 
+			v-if="showTest" 
+			:elevation="$vuetify.breakpoint.xsOnly ? 8 : 24" 
+			:width="$vuetify.breakpoint.xsOnly ? 320 : 600" 
+			class="mx-auto"
+		>
+			<v-carousel
+				:continuous="false"
+				:show-arrows="false"
+				hide-delimiters
+				height="100%"
+				v-model="frame"
+			>
+
+				<!-- carousel element -->
+				<CarouselItem 
+					v-for="(fr, i) in frames"
+					:key="i"
+					@nextFrame="frame++"
+				/>
+				
+			</v-carousel>
+		</v-card>
+
 	</v-container>
 </template>
 
 <script>
+import CarouselItem from "@/components/CarouselItem";
+
 export default {
+	name: 'test',
+	components: {
+		CarouselItem
+	},
 	props: {
 		links: {
 			type: Array,
@@ -100,6 +134,11 @@ export default {
 			required: true
 		}
 	},
+	data: () => ({
+		showTest: true,
+		frame: 0,
+		frames: ['frame1', 'frame2']
+	}),
 	computed: {
 		// find and return params for current route
 		linkParams() {
@@ -116,7 +155,7 @@ export default {
 
 			return params;
 		},
-		// return size for preview round v-sheet
+		// return size for card background
 		roundSize() {
 			let size;
 
