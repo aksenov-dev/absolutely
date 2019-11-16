@@ -109,6 +109,8 @@
 					v-for="(frame, i) in frames"
 					:key="i"
 					:title="frame.ruName"
+					:imgName="`${name}/${frames[i].imgName}`"
+					:defaultImage="defaultImage[i]"
 					:buttons="buttons"
 					:answer="answer"
 					:clicked="clicked"
@@ -159,6 +161,8 @@ export default {
 	data: () => ({
 		// test visible
 		showTest: false,
+		// array for visibility image for frame
+		defaultImage: [],
 		// index of current frame
 		currentFrame: 0,
 		// array with all frames (fill from DB)
@@ -191,6 +195,8 @@ export default {
 			setTimeout(() => {
 				this.answer = this.frames[this.currentFrame]['enName'];
 				this.clicked = this.buttons[i];
+				this.defaultImage.push(true);
+
 				this.clicked === this.answer ? this.totalRight++ : ''
 			}, 500)
 			// delay before next frame

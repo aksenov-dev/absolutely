@@ -19,8 +19,14 @@
 						class="ml-1"
 					>
 						<img 
+							v-show="!defaultImage" 
 							src="@/assets/question.png" 
 							alt="Question"
+						>
+						<img 
+							v-show="defaultImage" 
+							:src="'/img/' + imgName" 
+							alt="Answer"
 						>
 					</v-avatar>
 					
@@ -70,6 +76,14 @@ props: {
 	title: {
 		type: String,
 		required: true
+	},
+	imgName: {
+		type: String,
+		required: true
+	},
+	defaultImage: {
+		type: Boolean,
+		default: false
 	},
 	buttons: {
 		type: Array,
