@@ -73,7 +73,8 @@
 							depressed
 							rounded
 							block
-							@click="startTest"
+							:loading="ruLoading"
+							@click="startTest('ru')"
 						>Слово — Перевод</v-btn>
 					</v-col>
 					<v-col class="py-2 py-sm-3">
@@ -83,6 +84,8 @@
 							depressed
 							rounded
 							block
+							:loading="enLoading"
+							@click="startTest('en')"
 						>Перевод — Слово</v-btn>
 					</v-col>
 				</v-row>
@@ -108,7 +111,7 @@
 				<CarouselItem 
 					v-for="(frame, i) in frames"
 					:key="i"
-					:title="frame.ruName"
+					:title="frame[direction[1] + 'Name']"
 					:imgName="`${name}/${frames[i].imgName}`"
 					:defaultImage="defaultImage[i]"
 					:buttons="buttons"
@@ -161,6 +164,12 @@ export default {
 	data: () => ({
 		// test visible
 		showTest: false,
+		// loading icon for first type of test
+		ruLoading: false,
+		// loading icon for second type of test
+		enLoading: false,
+		// parameters for current type of test
+		direction: [],
 		// array for visibility image for frame
 		defaultImage: [],
 		// index of current frame
@@ -178,12 +187,19 @@ export default {
 	}),
 	methods: {
 		// get data from DB and start a test
-		startTest() {
+		startTest(lang) {
+			lang === 'ru' 
+				? this.direction.push('ru', 'en')
+				: this.direction.push('en', 'ru')
+
+			this[lang + 'Loading'] = true;
+			
 			axios.get('https://absolutely-d0a8f.firebaseio.com/'+ this.name + '.json')
 				.then(res => {
 					Object.keys(res.data).forEach(key => this.frames.push(res.data[key]));
 					// sort questions randomlly
 					this.frames.sort(() => Math.random() - 0.5);
+					this[lang + 'Loading'] = false;
 					this.showTest = true;
 				})
 				.catch(error => console.log(error));
@@ -193,7 +209,7 @@ export default {
 			this.disable = true;
 			// delay after answer button was clicked
 			setTimeout(() => {
-				this.answer = this.frames[this.currentFrame]['enName'];
+				this.answer = this.frames[this.currentFrame][this.direction[0] + 'Name'];
 				this.clicked = this.buttons[i];
 				this.defaultImage.push(true);
 
@@ -210,10 +226,10 @@ export default {
 	computed: {
 		// return randomly (answers + right answer) for current frame
 		buttons() {
-				const frameArray = this.frames[this.currentFrame]['enOptions'];
+				const frameArray = this.frames[this.currentFrame][this.direction[0] + 'Options'];
 				frameArray.sort(() => Math.random() - 0.5);
 				const slicedArray = frameArray.slice(2);
-				slicedArray.push(this.frames[this.currentFrame]['enName']);
+				slicedArray.push(this.frames[this.currentFrame][this.direction[0] + 'Name']);
 				slicedArray.sort(() => Math.random() - 0.5);
 
 				return slicedArray;
