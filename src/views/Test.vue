@@ -73,6 +73,7 @@
 							depressed
 							rounded
 							block
+							@click="startTest"
 						>Слово — Перевод</v-btn>
 					</v-col>
 					<v-col class="py-2 py-sm-3">
@@ -100,14 +101,15 @@
 				:show-arrows="false"
 				hide-delimiters
 				height="100%"
-				v-model="frame"
+				v-model="currentFrame"
 			>
 
 				<!-- carousel element -->
 				<CarouselItem 
-					v-for="(fr, i) in frames"
+					v-for="(frame, i) in frames"
 					:key="i"
-					@nextFrame="frame++"
+					:title="frame.ruName"
+					@nextFrame="currentFrame++"
 				/>
 				
 			</v-carousel>
@@ -117,6 +119,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import CarouselItem from "@/components/CarouselItem";
 
 export default {
@@ -135,10 +138,22 @@ export default {
 		}
 	},
 	data: () => ({
-		showTest: true,
-		frame: 0,
-		frames: ['frame1', 'frame2']
+		showTest: false,
+		currentFrame: 0,
+		frames: []
 	}),
+	methods: {
+		startTest() {
+			axios.get('https://absolutely-d0a8f.firebaseio.com/'+ this.name + '.json')
+				.then(res => {
+					console.log(res)
+					Object.keys(res.data).forEach(key => this.frames.push(res.data[key]));
+					this.frames.sort(() => Math.random() - 0.5);
+					this.showTest = true;
+				})
+				.catch(error => console.log(error));
+		}
+	},
 	computed: {
 		// find and return params for current route
 		linkParams() {

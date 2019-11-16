@@ -30,7 +30,7 @@
 
 		<!-- title for carousel-item -->
 		<v-card-title class="justify-center py-2 py-sm-4">
-			Название вопроса
+			{{ title }}
 		</v-card-title>
 	
 		<!-- buttons for carousel-item -->
@@ -60,7 +60,10 @@
 <script>
 export default {
 props: {
-
+	title: {
+		type: String,
+		required: true
+	}
 },
 methods: {
 	nextFrame() {
