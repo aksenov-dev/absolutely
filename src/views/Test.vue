@@ -110,6 +110,9 @@
 					:key="i"
 					:title="frame.ruName"
 					:buttons="buttons"
+					:answer="answer"
+					:clicked="clicked"
+					:disable="disable"
 					@clickAnswer="compareAnswer($event)"
 				/>
 				
@@ -117,18 +120,18 @@
 
 			<!-- progress bar-->
 			<v-row class="px-4">
-					<v-col cols="12" class="py-4 py-sm-5">
-						<v-progress-linear
-							background-color="secondary"
-							color="indigo lighten-4"
-							height="20"
-							class="rounded"
-							:value="`${100 / (frames.length - 1) * currentFrame}`"
-						>
-							<strong class="caption">{{ currentFrame }} / {{ frames.length }}</strong>
-						</v-progress-linear>
-					</v-col>
-				</v-row>
+				<v-col cols="12" class="py-4 py-sm-5">
+					<v-progress-linear
+						background-color="secondary"
+						color="indigo lighten-4"
+						height="20"
+						class="rounded"
+						:value="`${100 / (frames.length - 1) * currentFrame}`"
+					>
+						<strong class="caption">{{ currentFrame }} / {{ frames.length }}</strong>
+					</v-progress-linear>
+				</v-col>
+			</v-row>
 		</v-card>
 
 	</v-container>
@@ -154,27 +157,52 @@ export default {
 		}
 	},
 	data: () => ({
+		// test visible
 		showTest: false,
+		// index of current frame
 		currentFrame: 0,
-		frames: []
+		// array with all frames (fill from DB)
+		frames: [],
+		// total right answers
+		totalRight: 0,
+		// right answer for current frame
+		answer: '',
+		// clicked answer
+		clicked: '',
+		// disable buttons after click
+		disable: false
 	}),
 	methods: {
+		// get data from DB and start a test
 		startTest() {
 			axios.get('https://absolutely-d0a8f.firebaseio.com/'+ this.name + '.json')
 				.then(res => {
 					Object.keys(res.data).forEach(key => this.frames.push(res.data[key]));
+					// sort questions randomlly
 					this.frames.sort(() => Math.random() - 0.5);
 					this.showTest = true;
 				})
 				.catch(error => console.log(error));
 		},
+		// compare clicked answer with right answer
 		compareAnswer(i) {
-			console.log(i);
-			this.currentFrame++;
+			this.disable = true;
+			// delay after answer button was clicked
+			setTimeout(() => {
+				this.answer = this.frames[this.currentFrame]['enName'];
+				this.clicked = this.buttons[i];
+				this.clicked === this.answer ? this.totalRight++ : ''
+			}, 500)
+			// delay before next frame
+			setTimeout(() => {
+				this.currentFrame++;
+				this.disable = false;
+				this.answer = this.clicked = '';
+			}, 1500)
 		}
 	},
 	computed: {
-		// return mixed randomly (answers + right answer) for current frame
+		// return randomly (answers + right answer) for current frame
 		buttons() {
 				const frameArray = this.frames[this.currentFrame]['enOptions'];
 				frameArray.sort(() => Math.random() - 0.5);
@@ -221,6 +249,9 @@ export default {
 <style>
 .rounded {
 	border-radius: 28px;
+}
+.disable {
+  pointer-events: none;
 }
 .round {
 	border-radius: 50%;

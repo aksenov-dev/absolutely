@@ -47,7 +47,12 @@
 						depressed 
 						rounded
 						block
-						class="secondary accent--text"
+						:class="{
+							'secondary accent--text': (btn !== answer && btn !== clicked),
+							'error white--text': btn === clicked,
+							'success white--text': btn === answer,
+							'disable': disable
+						}"
 						@click="clickAnswer(k)"
 					>
 						{{ btn }}
@@ -68,6 +73,18 @@ props: {
 	},
 	buttons: {
 		type: Array,
+		required: true
+	},
+	answer: {
+		type: String,
+		required: true
+	},
+	clicked: {
+		type: String,
+		required: true
+	},
+	disable: {
+		type: Boolean,
 		required: true
 	}
 },
