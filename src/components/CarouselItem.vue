@@ -40,15 +40,17 @@
 					cols="12" 
 					sm="6" 
 					class="pa-2 pt-1 pt-sm-2 mx-auto" 
+					v-for="(btn, k) in buttons" 
+					:key="k"
 				>
 					<v-btn 
 						depressed 
 						rounded
 						block
 						class="secondary accent--text"
-						@click="nextFrame"
+						@click="clickAnswer(k)"
 					>
-						Кнопка
+						{{ btn }}
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -63,11 +65,15 @@ props: {
 	title: {
 		type: String,
 		required: true
+	},
+	buttons: {
+		type: Array,
+		required: true
 	}
 },
 methods: {
-	nextFrame() {
-		this.$emit('nextFrame')
+	clickAnswer(k) {
+		this.$emit('clickAnswer', k);
 	}
 },
 computed: {

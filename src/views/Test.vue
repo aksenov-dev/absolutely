@@ -109,7 +109,8 @@
 					v-for="(frame, i) in frames"
 					:key="i"
 					:title="frame.ruName"
-					@nextFrame="currentFrame++"
+					:buttons="buttons"
+					@clickAnswer="compareAnswer($event)"
 				/>
 				
 			</v-carousel>
@@ -146,15 +147,28 @@ export default {
 		startTest() {
 			axios.get('https://absolutely-d0a8f.firebaseio.com/'+ this.name + '.json')
 				.then(res => {
-					console.log(res)
 					Object.keys(res.data).forEach(key => this.frames.push(res.data[key]));
 					this.frames.sort(() => Math.random() - 0.5);
 					this.showTest = true;
 				})
 				.catch(error => console.log(error));
+		},
+		compareAnswer(i) {
+			console.log(i);
+			this.currentFrame++;
 		}
 	},
 	computed: {
+		// return mixed randomly (answers + right answer) for current frame
+		buttons() {
+				const frameArray = this.frames[this.currentFrame]['enOptions'];
+				frameArray.sort(() => Math.random() - 0.5);
+				const slicedArray = frameArray.slice(2);
+				slicedArray.push(this.frames[this.currentFrame]['enName']);
+				slicedArray.sort(() => Math.random() - 0.5);
+
+				return slicedArray;
+		},
 		// find and return params for current route
 		linkParams() {
 			const params = {};
