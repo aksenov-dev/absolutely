@@ -1,6 +1,6 @@
 # Absolutely
 
-> Online English test, powered by [Vuetify](https://vuetifyjs.com/ru/).
+> Online English test, powered by [Vuetify](https://vuetifyjs.com/).
 
 ## Demo
 
