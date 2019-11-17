@@ -111,13 +111,16 @@
 				<CarouselItem 
 					v-for="(frame, i) in frames"
 					:key="i"
-					:title="frame[direction[1] + 'Name']"
+					:title="i !== frames.length - 1 ? frame[direction[1] + 'Name'] : ''"
 					:imgName="`${name}/${frames[i].imgName}`"
+					:totalFrames="frames.length"
+					:totalRight="totalRight"
 					:defaultImage="defaultImage[i]"
 					:buttons="buttons"
 					:answer="answer"
 					:clicked="clicked"
 					:disable="disable"
+					:finishFrame="finishFrame"
 					@clickAnswer="compareAnswer($event)"
 				/>
 				
@@ -133,7 +136,7 @@
 						class="rounded"
 						:value="`${100 / (frames.length - 1) * currentFrame}`"
 					>
-						<strong class="caption">{{ currentFrame }} / {{ frames.length }}</strong>
+						<strong class="caption">{{ currentFrame }} / {{ frames.length - 1 }}</strong>
 					</v-progress-linear>
 				</v-col>
 			</v-row>
@@ -164,6 +167,8 @@ export default {
 	data: () => ({
 		// test visible
 		showTest: false,
+		// finish frame with result visible
+		finishFrame: false,
 		// loading icon for first type of test
 		ruLoading: false,
 		// loading icon for second type of test
@@ -186,7 +191,6 @@ export default {
 		disable: false
 	}),
 	methods: {
-		// get data from DB and start a test
 		startTest(lang) {
 			lang === 'ru' 
 				? this.direction.push('ru', 'en')
@@ -194,11 +198,14 @@ export default {
 
 			this[lang + 'Loading'] = true;
 			
+			// get data from DB
 			axios.get('https://absolutely-d0a8f.firebaseio.com/'+ this.name + '.json')
 				.then(res => {
 					Object.keys(res.data).forEach(key => this.frames.push(res.data[key]));
 					// sort questions randomlly
 					this.frames.sort(() => Math.random() - 0.5);
+					// add empty frame for show result
+					this.frames.push('');
 					this[lang + 'Loading'] = false;
 					this.showTest = true;
 				})
@@ -217,6 +224,8 @@ export default {
 			}, 500)
 			// delay before next frame
 			setTimeout(() => {
+				this.currentFrame === this.frames.length - 2 ? this.finishFrame = true : ''
+
 				this.currentFrame++;
 				this.disable = false;
 				this.answer = this.clicked = '';
@@ -226,6 +235,7 @@ export default {
 	computed: {
 		// return randomly (answers + right answer) for current frame
 		buttons() {
+			if (!this.finishFrame) {
 				const frameArray = this.frames[this.currentFrame][this.direction[0] + 'Options'];
 				frameArray.sort(() => Math.random() - 0.5);
 				const slicedArray = frameArray.slice(2);
@@ -233,6 +243,7 @@ export default {
 				slicedArray.sort(() => Math.random() - 0.5);
 
 				return slicedArray;
+			} else return [];
 		},
 		// find and return params for current route
 		linkParams() {
