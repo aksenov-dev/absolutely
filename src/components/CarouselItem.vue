@@ -145,55 +145,55 @@
 
 <script>
 export default {
-props: {
-	title: {
-		type: String,
-		required: true
+	props: {
+		title: {
+			type: String,
+			required: true
+		},
+		imgName: {
+			type: String,
+			required: true
+		},
+		totalFrames: {
+			type: Number,
+			required: true
+		},
+		totalRight: {
+			type: Number,
+			required: true
+		},
+		defaultImage: {
+			type: Boolean,
+			default: false
+		},
+		buttons: {
+			type: Array,
+			required: true
+		},
+		answer: {
+			type: String,
+			required: true
+		},
+		clicked: {
+			type: String,
+			required: true
+		},
+		disable: {
+			type: Boolean,
+			required: true
+		},
+		finishFrame: {
+			type: Boolean,
+			required: true
+		}
 	},
-	imgName: {
-		type: String,
-		required: true
+	methods: {
+		// create event with index of clicked answer button
+		clickAnswer(i) {
+			this.$emit('clickAnswer', i);
+		}
 	},
-	totalFrames: {
-		type: Number,
-		required: true
-	},
-	totalRight: {
-		type: Number,
-		required: true
-	},
-	defaultImage: {
-		type: Boolean,
-		default: false
-	},
-	buttons: {
-		type: Array,
-		required: true
-	},
-	answer: {
-		type: String,
-		required: true
-	},
-	clicked: {
-		type: String,
-		required: true
-	},
-	disable: {
-		type: Boolean,
-		required: true
-	},
-	finishFrame: {
-		type: Boolean,
-		required: true
-	}
-},
-methods: {
-	// create event with index of clicked answer button
-	clickAnswer(i) {
-		this.$emit('clickAnswer', i);
-	}
-},
-computed: {
+	computed: {
 		// return size for frame background
 		roundSize() {
 			let size;

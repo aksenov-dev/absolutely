@@ -2,95 +2,13 @@
 	<v-container class="fill-height pb-3 pb-sm-5">
 		
 		<!-- preview card -->
-		<v-card 
-			v-if="!showTest" 
-			:elevation="$vuetify.breakpoint.xsOnly ? 8 : 24" 
-			:width="$vuetify.breakpoint.xsOnly ? 320 : 600" 
-			class="mx-auto"
-		>			
-			<v-row align="center" class="mx-0" :class="linkParams.color">
-				<v-col class="my-4 my-sm-10">
-
-					<!-- background for icon -->
-					<v-sheet 
-						:width="roundSize"
-						:height="roundSize"
-						color="white" 
-						class="mx-auto pt-1 round shadow"
-					>
-						<v-sheet 
-							:width="roundSize - 8"
-							:height="roundSize - 8"
-							class="d-flex ml-1 round secondary"
-						>
-
-							<!-- preview card icon -->
-							<v-icon class="mx-auto no-transition" :class="linkParams.textColor" size="108">
-								{{ linkParams.icon }}
-							</v-icon>
-						</v-sheet>
-					</v-sheet>
-				</v-col>
-			</v-row>
-
-			<!-- preview card description -->
-			<v-card-text class="body-1 accent--text pb-0 pb-sm-4">
-				<p 
-					class="mb-0" 
-					:class="{
-						'body-2': $vuetify.breakpoint.xsOnly, 
-						'body-1': $vuetify.breakpoint.smAndUp
-					}"
-				>
-					Предлагаем вам пройти тест на знание английских слов.
-				</p>
-				<p 
-					class="mb-0" 
-					:class="{
-						'body-2': $vuetify.breakpoint.xsOnly, 
-						'body-1': $vuetify.breakpoint.smAndUp
-					}"
-				>
-					Тест состоит из 20 вопросов на тему <strong>«{{ linkParams.text }}»</strong>.
-				</p>
-				<p class="mb-0 d-none d-sm-block">
-					В режиме <strong>«слово-перевод»</strong> вам будет предложено выбрать 
-					правильный перевод английского слова на русский.<br>
-				</p>
-				<p class="mb-0 d-none d-sm-block">
-					В режиме <strong>«перевод-слово»</strong> нужно будет выбрать правильный 
-					английский перевод для русского слова.
-				</p>
-			</v-card-text>
-
-			<!-- preview card buttons -->
-			<v-card-actions class="pt-2 pt-sm-1">
-				<v-row class="px-3">
-					<v-col class="pb-1 py-sm-3">
-						<v-btn 
-							class="white--text px-4"
-							:class="linkParams.color"
-							depressed
-							rounded
-							block
-							:loading="ruLoading"
-							@click="startTest('ru')"
-						>Слово — Перевод</v-btn>
-					</v-col>
-					<v-col class="py-2 py-sm-3">
-						<v-btn 
-							class="white--text px-4"
-							:class="linkParams.color"
-							depressed
-							rounded
-							block
-							:loading="enLoading"
-							@click="startTest('en')"
-						>Перевод — Слово</v-btn>
-					</v-col>
-				</v-row>
-			</v-card-actions>
-		</v-card>
+		<Preview 
+			v-if="!showTest"
+			:linkParams="linkParams"
+			:ruLoading="ruLoading"
+			:enLoading="enLoading"
+			@startTest="startTest($event)"
+		/>
 
 		<!-- carousel card -->
 		<v-card 
@@ -127,32 +45,33 @@
 			</v-carousel>
 
 			<!-- progress bar-->
-			<v-row class="px-4">
-				<v-col cols="12" class="py-4 py-sm-5">
-					<v-progress-linear
-						background-color="secondary"
-						color="indigo lighten-4"
-						height="20"
-						class="rounded"
-						:value="`${100 / (frames.length - 1) * currentFrame}`"
-					>
-						<strong class="caption">{{ currentFrame }} / {{ frames.length - 1 }}</strong>
-					</v-progress-linear>
-				</v-col>
-			</v-row>
-		</v-card>
+			<Progress 
+				:totalFrames="frames.length"
+				:currentFrame="currentFrame"
+			/>
 
+		</v-card>
 	</v-container>
 </template>
 
 <script>
 import axios from 'axios';
+
 import CarouselItem from "@/components/CarouselItem";
+import Progress from "@/components/Progress";
+import Preview from "@/components/Preview";
 
 export default {
 	name: 'test',
+	metaInfo() {
+		return {
+			title: this.linkParams.text
+		}
+	},
 	components: {
-		CarouselItem
+		CarouselItem,
+		Progress,
+		Preview
 	},
 	props: {
 		links: {
@@ -259,30 +178,12 @@ export default {
 			})
 
 			return params;
-		},
-		// return size for card background
-		roundSize() {
-			let size;
-
-			switch (this.$vuetify.breakpoint.name) {
-				case 'xs':
-					size = '128'
-					break
-				case 'sm': case 'md': case 'lg': case 'xl':
-					size = '198'
-					break
-			}
-
-			return size
 		}
 	}
 }
 </script>
 
 <style>
-.rounded {
-	border-radius: 28px;
-}
 .disable {
   pointer-events: none;
 }
