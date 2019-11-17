@@ -38,7 +38,7 @@
 					:answer="answer"
 					:clicked="clicked"
 					:disable="disable"
-					:finishFrame="finishFrame"
+					:finishFrame="i === frames.length - 1"
 					@clickAnswer="compareAnswer($event)"
 				/>
 				
@@ -111,6 +111,8 @@ export default {
 	}),
 	methods: {
 		startTest(lang) {
+			this.clearParams();
+
 			lang === 'ru' 
 				? this.direction.push('ru', 'en')
 				: this.direction.push('en', 'ru')
@@ -149,6 +151,14 @@ export default {
 				this.disable = false;
 				this.answer = this.clicked = '';
 			}, 1500)
+		},
+		// clear all params before start new test
+		clearParams() {
+			this.currentFrame = this.totalRight = 0;
+			this.answer = this.clicked = '';
+			this.frames = [];
+			this.direction = [];
+			this.defaultImage = [];
 		}
 	},
 	computed: {
@@ -178,6 +188,11 @@ export default {
 			})
 
 			return params;
+		}
+	},
+	watch: {
+		'$route.params.name': function () {
+			this.showTest = false;
 		}
 	}
 }
