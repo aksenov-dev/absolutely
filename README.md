@@ -1,24 +1,20 @@
-# absolutely
+# Absolutely
 
-## Project setup
-```
-npm install
-```
+> Online English test, powered by [Vuetify](https://vuetifyjs.com/ru/).
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Demo
 
-### Compiles and minifies for production
-```
-npm run build
-```
+View a demo [here](http://absolutely.myfirst.website/).
 
-### Lints and fixes files
-```
-npm run lint
-```
+## Build Setup
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+``` bash
+# Project setup
+$ npm install
+
+# Compiles and hot-reloads for development
+$ npm run serve
+
+# Compiles and minifies for production
+$ npm run build
+```
