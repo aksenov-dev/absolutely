@@ -2,10 +2,6 @@
 
 > Online English test, powered by [Vuetify](https://vuetifyjs.com/).
 
-## Demo
-
-View a demo [here](http://absolutely.myfirst.website/).
-
 ## Build Setup
 
 ``` bash
